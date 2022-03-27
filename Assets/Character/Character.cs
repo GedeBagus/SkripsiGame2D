@@ -54,7 +54,7 @@ public class Character : MonoBehaviour
             anim.SetBool("isJumping", true);
         }
 
-        if (rb.velocity.y < 0 && IsGrounded == false)
+        if (rb.velocity.y < -1 && IsGrounded == false)
         {
             anim.SetBool("isJumping", false);
             anim.SetBool("isFalling", true);
