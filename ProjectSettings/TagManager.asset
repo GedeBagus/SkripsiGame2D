@@ -8,6 +8,7 @@ TagManager:
   - Portal
   - Death
   - Enemy
+  - Coins
   layers:
   - Default
   - TransparentFX

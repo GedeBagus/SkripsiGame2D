@@ -8,6 +8,7 @@ public class Character : MonoBehaviour
     [SerializeField] private LayerMask ground;
     [SerializeField] Transform groundCheckCollider;
     [SerializeField] private Text healthText;
+    [SerializeField] private Text coinText;
 
     public HealthBar healthBarr;
 
@@ -21,14 +22,17 @@ public class Character : MonoBehaviour
     private Vector3 localScale;
     bool IsGrounded = false;
     public int playerHealth = 100;
-    public int currentHealth;   
+    public int currentHealth;
+    public static int numberOfCoins;   
         
     // Start is called before the first frame update
     void Start()
     {
         healthText.text = playerHealth.ToString("0");
+        coinText.text = numberOfCoins.ToString("0");
         currentHealth = playerHealth;
         healthBarr.SetMaxHealth(playerHealth);
+        // numberOfCoins = PlayerPrefs.GetInt("StoredSystemCoins", 0);
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         localScale = transform.localScale;
@@ -38,6 +42,7 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        coinText.text = numberOfCoins.ToString("0");
         if (!isDead){
             dirX = Input.GetAxisRaw("Horizontal") * moveSpeed;
         }
