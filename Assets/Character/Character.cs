@@ -8,6 +8,9 @@ public class Character : MonoBehaviour
     [SerializeField] private LayerMask ground;
     [SerializeField] Transform groundCheckCollider;
     [SerializeField] private Text healthText;
+
+    public HealthBar healthBarr;
+
     const float groundCheckRadius = 0.2f;
     private Rigidbody2D rb;
     private Animator anim;
@@ -18,12 +21,14 @@ public class Character : MonoBehaviour
     private Vector3 localScale;
     bool IsGrounded = false;
     public int playerHealth = 100;
-    
+    public int currentHealth;   
         
     // Start is called before the first frame update
     void Start()
     {
         healthText.text = playerHealth.ToString("0");
+        currentHealth = playerHealth;
+        healthBarr.SetMaxHealth(playerHealth);
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         localScale = transform.localScale;
@@ -117,13 +122,14 @@ public class Character : MonoBehaviour
 
     public void UpdateHealth()
     {
-        healthText.text = playerHealth.ToString("0");
+        healthText.text = currentHealth.ToString("0");
+        healthBarr.SetHealth(currentHealth);
         
-        if (playerHealth <= 0){
+        if (currentHealth <= 0){
             dirX = 0;
             isDead = true;
             anim.SetTrigger("isDead");
-            // Debug.Log("Game Over");
+            Debug.Log("Game Over");
         }
         else{
             anim.SetTrigger ("isHurting");
