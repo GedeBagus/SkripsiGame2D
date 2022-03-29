@@ -1,24 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Character : MonoBehaviour
 {
     [SerializeField] private LayerMask ground;
     [SerializeField] Transform groundCheckCollider;
+    [SerializeField] private Text healthText;
     const float groundCheckRadius = 0.2f;
     private Rigidbody2D rb;
     private Animator anim;
     private float moveSpeed;
     private float dirX;
     private bool facingRight = true;
+    bool isHurting, isDead;
     private Vector3 localScale;
     bool IsGrounded = false;
+    public int playerHealth = 100;
     
         
     // Start is called before the first frame update
     void Start()
     {
+        healthText.text = playerHealth.ToString("0");
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         localScale = transform.localScale;
@@ -28,9 +33,11 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        dirX = Input.GetAxisRaw("Horizontal") * moveSpeed;
+        if (!isDead){
+            dirX = Input.GetAxisRaw("Horizontal") * moveSpeed;
+        }
 
-        if (Input.GetButtonDown("Jump") && IsGrounded == true)
+        if (Input.GetButtonDown("Jump") && !isDead && IsGrounded == true)
         {
             rb.AddForce(Vector2.up * 550f);                       
         }
@@ -75,7 +82,9 @@ public class Character : MonoBehaviour
     
     private void FixedUpdate() {
         GroundCheck();
-        rb.velocity = new Vector2(dirX, rb.velocity.y);
+        if (!isHurting){
+            rb.velocity = new Vector2(dirX, rb.velocity.y);
+        }
         if (dirX > 0 && !facingRight)
         {
             Flip();
@@ -104,6 +113,41 @@ public class Character : MonoBehaviour
         facingRight = !facingRight;
 
         transform.Rotate(0f, 180f, 0f);
+    }
+
+    public void UpdateHealth()
+    {
+        healthText.text = playerHealth.ToString("0");
+        
+        if (playerHealth <= 0){
+            dirX = 0;
+            isDead = true;
+            anim.SetTrigger("isDead");
+            // Debug.Log("Game Over");
+        }
+        else{
+            anim.SetTrigger ("isHurting");
+            StartCoroutine ("Hurt");
+
+        }
+    }
+
+    IEnumerator Hurt()
+    {
+        isHurting = true;
+        rb.velocity = Vector2.zero;
+
+        if (facingRight){
+            rb.AddForce (new Vector2(-200f, 300f));
+        }
+        else{
+            rb.AddForce (new Vector2(200f, 300f));
+        }
+        // rb.AddForce(Vector2.up * 200f);
+
+        yield return new WaitForSeconds(0.5f);
+
+        isHurting = false;
     }
 }
  
