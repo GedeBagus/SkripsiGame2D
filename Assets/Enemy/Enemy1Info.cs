@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Enemy1Info : MonoBehaviour
 {
     public GameObject Enemy1UI;
+    [SerializeField] private Enemy1 enemy1;
     
     // Start is called before the first frame update
     void Start()
@@ -31,6 +32,7 @@ public class Enemy1Info : MonoBehaviour
         {
             Enemy1UI.SetActive(false);
             Destroy(gameObject);
+            enemy1.playerNear = true;
         }
     }
 }

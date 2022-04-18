@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 using UnityEngine.UI;
 
 public class Character : MonoBehaviour
 {
-    [SerializeField] private LayerMask ground;
+    [SerializeField] LayerMask ground;
     [SerializeField] Transform groundCheckCollider;
-    [SerializeField] private Text healthText;
-    [SerializeField] private Text coinText;
+    [SerializeField] Text healthText;
+    [SerializeField] Text coinText;
+    [SerializeField] GameObject playerRifle;
 
     public HealthBar healthBarr;
 
@@ -43,38 +45,54 @@ public class Character : MonoBehaviour
     void Update()
     {
         coinText.text = numberOfCoins.ToString("0");
-        if (!isDead){
-            dirX = Input.GetAxisRaw("Horizontal") * moveSpeed;
+        if (!isDead)
+        {
+            dirX = CrossPlatformInputManager.GetAxis("Horizontal") * moveSpeed;
+            if (IsGrounded)
+            {
+                // Debug.Log("adsada");
+                playerRifle.gameObject.SetActive(true);
+                GetComponent<Weapon>().enabled = true;
+            }
         }
 
-        if (Input.GetButtonDown("Jump") && !isDead && IsGrounded == true)
+        if (CrossPlatformInputManager.GetButtonDown("Jump") && !isDead && IsGrounded == true)
         {
-            rb.AddForce(Vector2.up * 550f);                       
+            rb.AddForce(Vector2.up * 550f);
+            // playerRifle.gameObject.SetActive(false);
+            // GetComponent<Weapon>().enabled = false;                       
         }
 
         if (Mathf.Abs(dirX) > 0)
         {
             anim.SetBool("isRunning", true);
+            // playerRifle.gameObject.SetActive(true);
         } else
         {
             anim.SetBool("isRunning", false);
+            // playerRifle.gameObject.SetActive(true);
         }
 
         if (rb.velocity.y == 0)
         {
             anim.SetBool("isJumping", false);
-            anim.SetBool("isFalling", false);            
+            anim.SetBool("isFalling", false);
+            // playerRifle.gameObject.SetActive(true);            
         }
 
         if (rb.velocity.y > 5 && IsGrounded == false)
         {
             anim.SetBool("isJumping", true);
+            playerRifle.gameObject.SetActive(false);
+            GetComponent<Weapon>().enabled = false;
         }
 
         if (rb.velocity.y < -1 && IsGrounded == false)
         {
             anim.SetBool("isJumping", false);
             anim.SetBool("isFalling", true);
+            playerRifle.gameObject.SetActive(false);
+            GetComponent<Weapon>().enabled = false;
         }
     }
 
@@ -133,6 +151,7 @@ public class Character : MonoBehaviour
         if (currentHealth <= 0){
             dirX = 0;
             isDead = true;
+            playerRifle.gameObject.SetActive(false);
             anim.SetTrigger("isDead");
             Debug.Log("Game Over");
         }
@@ -147,6 +166,7 @@ public class Character : MonoBehaviour
     {
         isHurting = true;
         rb.velocity = Vector2.zero;
+        playerRifle.gameObject.SetActive(false);
 
         if (facingRight){
             rb.AddForce (new Vector2(-200f, 300f));

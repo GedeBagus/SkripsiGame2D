@@ -17,14 +17,14 @@ public class PauseMenu : MonoBehaviour
     
     void Update()
     {
-        if (Time.timeScale == 0)
-        {
-            Cursor.visible = true;
-        }
-        if (Time.timeScale >= 1)
-        {
-            Cursor.visible = false;
-        }
+        // if (Time.timeScale == 0)
+        // {
+        //     Cursor.visible = true;
+        // }
+        // if (Time.timeScale >= 1)
+        // {
+        //     Cursor.visible = false;
+        // }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (GameIsPaused)
